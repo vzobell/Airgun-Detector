@@ -21,14 +21,15 @@ Scores on three test sets of five-minute windows in which every shot was marked 
 
 | Test set | Shots | Original | Shape-based | Network |
 |---|---|---|---|---|
-| Set 1: 22 windows chosen to cover known conditions | 313 | 189 found (60%), 41 spare | 294 found (94%), 12 spare | 292 found (93%), 4 spare |
-| Set 2: 28 random windows, seven sites | 546 | 230 found (42%), 12 spare | 397 found (73%), 24 spare | 444 found (81%), 31 spare |
-| Set 3: 57 random windows at GC_15, MC_17 and DC_15 | 787 | 344 found (44%), 8 spare | 668 found (85%), 28 spare | 672 found (85%), 24 spare |
+| Set 1: 22 windows chosen to cover known conditions | 313 | 189 found (60%), 41 spare | 294 found (94%), 12 spare | 297 found (95%), 5 spare |
+| Set 2: 28 random windows, seven sites | 546 | 230 found (42%), 12 spare | 397 found (73%), 24 spare | 492 found (90%), 61 spare |
+| Set 3: 57 random windows at GC_15, MC_17 and DC_15 | 787 | 344 found (44%), 8 spare | 668 found (85%), 28 spare | 731 found (93%), 23 spare |
 
 "Spare" is every detection that holds no marked shot, whether the window has airguns or not.
 
 How to read these numbers:
 
+- **The network performs best**, and all three are kept as options. It finds the most shots on every set, though on set 2 it also makes the most spare detections.
 - **Set 3 is the cleanest comparison.** Its windows were drawn at random, labelled once, and never used to tune or train anything.
 - **Sets 1 and 2 favour the shape-based detector**, because its settings were tuned on set 1 and partly on set 2. The network was never trained or tuned on any of the three sets.
 - **The original detector misses faint shots and merges close ones.** Its fixed threshold is in raw recording units, and background levels differ by about 15 dB between sites. At DC_15 in set 3 it finds 13 of 265 shots.
@@ -84,15 +85,15 @@ Output is one `.mat` per xwav with the same variables as the original detector, 
 - **Input.** A spectrogram from 5 to 250 Hz (99 rows) with one column every 0.1 s. Each frequency has its median level removed, so the network sees dB above background.
 - **Network.** `ShotNet` in `model.py`, about 208,000 learned values: four 2-D convolution blocks that learn what a shot looks like, then seven 1-D convolution blocks along time that give each output about 25 s of context on either side.
 - **Output.** The probability that a shot starts, every 0.1 s. Peaks above a threshold and at least 2.5 s apart are the detections. It gives start times only, not durations.
-- **Training data.** 234 hand-labelled windows (5,177 shots) in `evaluation/train1` and `evaluation/train2`. The threshold is chosen on a fifth of the training windows that are held back.
-- **Ensemble.** Four copies trained from different random starts are averaged (`models/train12_seed1..4.pt`, threshold 0.40).
+- **Training data.** 318 hand-labelled windows (6,551 shots) in `evaluation/train1`, `train2` and `train3`. Background noise from windows without airguns is mixed into a share of the training examples. The threshold is chosen on a fifth of the training windows that are held back.
+- **Ensemble.** Four copies trained from different random starts are averaged (`models/train123mix_seed1..4.pt`, threshold 0.40).
 
 To train and score (Python 3 with `torch`, `numpy`, `scipy`, `soundfile`):
 
 ```bash
 cd cnn
-python train.py --train train1 train2 --test set1 set2 --epochs 80 --name train12_seed1 --seed 1
-python ensemble.py train12_seed set1 set2 set3
+python train.py --train train1 train2 train3 --test set1 set2 --epochs 80 --mix 0.3 --name train123mix_seed1 --seed 1
+python ensemble.py train123mix_seed set1 set2 set3
 ```
 
 Not yet written: a script that runs the network over a whole deployment and writes detections in the same format as the other two detectors.
@@ -117,4 +118,4 @@ Only what is needed to label, score and reproduce the figures is kept here. The 
 
 - `xcorr_original/` includes three bug fixes that are under review in pull request #2 (milliseconds in segment start times, a one-sample alignment offset, and bout end times).
 - The shape-based detector and the network are new and have been tested only on the windows described above, all from Gulf of Mexico deployments.
-- The network is still being improved with further rounds of labelling.
+- The network has had three rounds of labelling. The third round clearly improved it at the three sites of set 3; on set 2 it mainly made the network more willing to fire (see the report).

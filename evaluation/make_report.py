@@ -198,20 +198,22 @@ s += bullets([
     "<b>They were tested on 107 five-minute windows</b> in three sets, with every shot marked by eye "
     "(%d shots in all). Set 3 is the cleanest test: 57 random windows at GOM_GC_15, MC_17 and DC_15, "
     "labelled once and never used to tune or train anything." % (T1["shots"] + T2["shots"] + T3["shots"]),
-    "<b>On set 3 the original detector finds %s of shots; the shape-based detector and the network "
-    "each find %s.</b> Precision is similar for all three (%s, %s and %s)." %
+    "<b>On set 3 the original detector finds %s of shots, the shape-based detector %s and the network "
+    "%s.</b> Precision is similar for all three (%s, %s and %s)." %
     (pct(T3["original"]["found"], T3["shots"]), pct(T3["shape"]["found"], T3["shots"]),
-     prec(T3, "original"), prec(T3, "shape"), prec(T3, "network")),
+     pct(T3["network"]["found"], T3["shots"]), prec(T3, "original"), prec(T3, "shape"), prec(T3, "network")),
     "<b>The original detector misses faint shots and merges close ones.</b> Its threshold is a fixed "
     "number in raw recording units, and it finds almost nothing at the quieter site (13 of 265 shots at "
     "DC_15 in set 3). Changing its thresholds does not fix this.",
-    "<b>The two new detectors are level on set 3.</b> The network is ahead on set 2 (%s against %s) and "
-    "is less affected by instrument noise. The shape-based detector needs no training and runs in MATLAB "
-    "like the original." % (pct(T2["network"]["found"], T2["shots"]), pct(T2["shape"]["found"], T2["shots"])),
-    "<b>Both new detectors still miss shots in the hardest windows:</b> fast shooting in a loud "
-    "background, and faint shots at DC_15.",
-    "<b>Three small bugs in the original were fixed</b> and are in review as pull request #2. Nothing "
-    "else described here has been proposed for the main repository yet.",
+    "<b>The network performs best.</b> It finds the most shots on every set (set 2: %s against %s for the "
+    "shape-based detector) and is less affected by instrument noise. It got there through three rounds of "
+    "labelling; after two rounds it was level with the shape-based detector on set 3. On set 2 it also "
+    "makes more spare detections than the other two. The shape-based detector needs no training and runs "
+    "in MATLAB like the original." % (pct(T2["network"]["found"], T2["shots"]), pct(T2["shape"]["found"], T2["shots"])),
+    "<b>All three are kept as options.</b> The hardest remaining cases are very faint shots at DC_15 and "
+    "long shots made of several pulses.",
+    "<b>Three small bugs in the original were fixed</b> and are in review as pull request #2. The "
+    "three-folder layout with the two new detectors is proposed in a second pull request.",
 ])
 
 # ---------------------------------------------------------------- 1 original
@@ -289,6 +291,8 @@ s += [table([
      "From a coarse scan of each deployment, to cover pulsing and non-pulsing stretches.", "Training the network."],
     ["Train 2", "100", "2,638", "The same eight sites",
      "Chosen by the network: windows where it was unsure, or where its copies disagreed.", "Training the network."],
+    ["Train 3", "97 (84 usable)", "1,374", "The same eight sites, half of the windows at DC_15",
+     "Chosen by the network again, aimed at faint shots and fast shooting.", "Training the network."],
 ], [0.6, 1.0, 0.65, 1.5, 2.0, 1.25])]
 s += bullets([
     "<b>One event per shot cycle.</b> Where a shot reaches the recorder as several overlapping arrivals, "
@@ -299,12 +303,12 @@ s += bullets([
     "<i>extra</i> if the window has airguns and <i>false</i> if it does not. Recall is shots found over "
     "shots marked; precision is detections on a shot over all detections.",
     "<b>Windows the reviewer could not decide.</b> X25 and X28 (set 2) are scored as having no airguns; "
-    "the only detection in either is one by the network in X28. In Y01 (set 3) airguns are clearly "
+    "the only detections in either are three by the network in X28. In Y01 (set 3) airguns are clearly "
     "present but the shots could not be marked one by one, so it is left out of the shot scores; the "
-    "three detectors make 17, 18 and 10 detections in it.",
+    "three detectors make 17, 18 and 6 detections in it.",
     "<b>Instrument noise is not tested.</b> Such data is removed before any detector is run. Two set 3 "
     "windows (Y58, Y59) turned out to be instrument noise and were dropped after the first scoring; "
-    "they held 15, 55 and 11 detections by the original, shape-based detector and network.",
+    "they hold 15, 55 and 10 detections by the original, shape-based detector and network.",
     "<b>Starting marks for set 3 pooled all three detectors</b> without showing which detector made "
     "which mark, so the labels do not lean towards one of them.",
 ])
@@ -389,7 +393,7 @@ s += [P("6. The spectrogram network", h1),
         "small convolutional neural network is shown spectrograms together with the reviewer's shot marks, "
         "and learns to output, for every 0.1 s, the probability that a shot starts there.")]
 s += [figure(os.path.join(FIGS, "M_network.png"), "<b>Input, layers and output of the network,</b> on two "
-             "minutes of window W05. The shot near 44 s scores just under the threshold and is missed; "
+             "minutes of window W05. The shot near 44 s scores below the threshold and is missed; "
              "the other 16 are detected.")]
 s += [table([
     ["Part", "What it is"],
@@ -405,34 +409,46 @@ s += [table([
                        "what surrounds a shot, and let a long multi-pulse shot count once."],
     ["Output", "One probability per 0.1 s. Peaks above a threshold and at least 2.5 s apart are the "
                "detections. It gives a start time for each shot but no end time or duration."],
-    ["Size", "About 208,000 learned values. One copy trains in under half an hour on a desktop processor."],
+    ["Size", "About 208,000 learned values. One copy trains in about half an hour on a desktop processor."],
 ], [1.5, 5.5])]
 s += [P("How it was trained", h2)]
 s += bullets([
     "<b>Labels.</b> Each reviewed mark becomes a bump 0.4 s wide on a target curve, and the network is "
-    "adjusted until its output matches. 234 labelled windows with 5,177 shots were used (train 1 and "
-    "train 2). The test sets are never trained on.",
+    "adjusted until its output matches. 318 labelled windows with 6,551 shots were used (train 1, 2 "
+    "and 3). The test sets are never trained on.",
     "<b>Threshold.</b> A fifth of the training windows are held back, and the threshold that works best "
     "on them is used. The test sets play no part in it.",
     "<b>Averaging.</b> Four copies trained from different random starts are averaged (threshold 0.40). "
-    "Single copies vary: on set 2 they find between 422 and 465 shots.",
-    "<b>Labelling in rounds.</b> For train 2 the network itself chose the windows it was least sure "
-    "about, and the reviewer corrected the pooled output of all three detectors. That second round "
-    "raised its score on set 2 from 359 to %d of %d shots." % (T2["network"]["found"], T2["shots"]),
-    "<b>Mixing in background noise</b> from windows without airguns during training gave a small gain "
-    "(set 2: 451 shots found, with 7 more extra detections) and made the copies more alike. It is not "
-    "used in the results reported here.",
+    "Single copies vary: on set 2 they find between 478 and 501 shots, with 70 to 114 spare detections.",
+    "<b>Labelling in rounds.</b> For train 2 and train 3 the network itself chose the windows it was "
+    "least sure about, and the reviewer corrected the pooled output of all three detectors. The second "
+    "round raised its score on set 2 from 359 to 444 of %d shots. The third round raised set 3 from 672 "
+    "to %d of %d shots with no more spare detections; what it did on set 2 is discussed in section 7." %
+    (T2["shots"], T3["network"]["found"], T3["shots"]),
+    "<b>Background noise is mixed in.</b> For a share of the training examples, sound from a window "
+    "without airguns is added on top at a random level. On its own this gave a small gain (set 2: 451 "
+    "against 444 shots found) and made the copies more alike.",
+    "<b>Training length.</b> Each copy trains for 80 passes through the data. A copy trained for 160 "
+    "found no more shots (486 of 546 in set 2 either way) and made more spare detections, and the loss "
+    "on the held-back windows is lowest near pass 30 and rises afterwards, so longer training does not "
+    "help.",
 ])
 
+s += [figure(os.path.join(FIGS, "M_training.png"), "<b>Training for 80 passes (top) and 160 passes (bottom), one copy "
+             "each.</b> Left: the loss on the training data keeps falling, while the loss on the held-back "
+             "windows is lowest near pass 30 and then rises, which is the sign of memorising. Right: shots "
+             "found and spare detections on the held-back windows at a fixed threshold of 0.5; they swing "
+             "widely in mid-training and settle as the step size shrinks towards the end. The longer run "
+             "ends no better.", width=6.3)]
+
 # ---------------------------------------------------------------- 7 results
-s += [P("7. Results", h1)]
 rows = [["", "Shots", "Original", "Shape-based", "Network"]]
 for name, t in (("Set 1", T1), ("Set 2", T2), ("Set 3", T3)):
     rows += [[name + ": shots found", t["shots"]] + [found(t, d) for d in DETS],
              [name + ": merged / extra / false detections", ""] +
              ["%d / %d / %d" % (t[d]["merged"], t[d]["extra"], t[d]["false"]) for d in DETS],
              [name + ": precision", ""] + [prec(t, d) for d in DETS]]
-s += [table(rows, [3.0, 0.7, 1.1, 1.1, 1.1])]
+s += [KeepTogether([P("7. Results", h1), table(rows, [3.0, 0.7, 1.1, 1.1, 1.1])])]
 s += [P("How to read the three sets", h2)]
 s += bullets([
     "<b>Set 3 is the fair comparison.</b> Random windows at the three sites where results are needed, "
@@ -457,7 +473,17 @@ s += [figure(os.path.join(FIGS, "PR_curves.png"), "<b>Precision and recall as ea
              "Original: the fixed floor is lowered from 1e17 to 0, then the offset above the median. "
              "Shape-based: its four acceptance settings are moved together, so this is a path through the "
              "settings and not a single-threshold curve. Network: the probability threshold; the dashed "
-             "line is the network before the second labelling round.")]
+             "line is the network before the third labelling round.")]
+s += [P("<b>What the third labelling round changed.</b> On set 3 it is a real gain: at the same threshold "
+        "the network finds %d shots instead of 672, with %d spare detections instead of 24. On set 2 it is "
+        "mostly a change of trade-off. The network finds %d shots instead of 444, but its spare detections "
+        "rose from 31 to %d, and the earlier network reaches the same point (490 found, 62 spare) simply by "
+        "lowering its threshold to 0.25; the two curves for set 2 above lie almost on top of each other. So "
+        "the new labels, half of them from DC_15, improved the network at the three sites of set 3 and made "
+        "it more willing to fire elsewhere. Some of the extra detections in set 2 may be real faint shots "
+        "that were not marked, since set 2 was labelled earlier; this has not been checked." %
+        (T3["network"]["found"], T3["network"]["extra"] + T3["network"]["false"],
+         T2["network"]["found"], T2["network"]["extra"] + T2["network"]["false"]), body)]
 s += [P("Set 3 by window (found; F = extra or false detections):", body), window_table(R3)]
 s += [P("Set 2 by window:", body),
       window_table(R2, {"X04": "fast shooting in a loud background", "X05": "long shots, several arrivals",
@@ -483,10 +509,10 @@ examples = [
     ("set2", R2, "X15", "Ship noise, no airguns (X15, Y2B_01, set 2)", "Only the original fires."),
     ("set2", R2, "X06", "Long shots with several arrivals (X06, MC_17, set 2)", "Each shot lasts several "
      "seconds. The shape-based detector looks for one sharp pulse and does worst here."),
-    ("set2", R2, "X04", "Fast shooting in a loud background (X04, CE_03, set 2)", "The hardest window for "
-     "both new detectors; the shots barely stand out."),
-    ("set3", R3, "Y02", "Hard for all three (Y02, DC_15, set 3)", "Faint shots that the network scores "
-     "below its threshold."),
+    ("set2", R2, "X04", "Fast shooting in a loud background (X04, CE_03, set 2)", "The shots barely stand "
+     "out, and the shape-based detector finds almost none."),
+    ("set3", R3, "Y10", "Hard for all three (Y10, DC_15, set 3)", "Very faint shots; the network scores "
+     "many of them below its threshold."),
 ]
 for name, res, wid, head, text in examples:
     s.append(figure(compare(name, wid), "<b>%s.</b> %s Found, %s." % (head, text, cap(res, wid))))
@@ -497,13 +523,16 @@ s += bullets([
     "<b>The marks are one person's judgement.</b> Faint and overlapping shots are uncertain. Ten set 3 "
     "windows are set aside to be labelled a second time, which will show how repeatable the marks are "
     "and so how high any detector's score can be expected to go.",
-    "<b>The test sets are small.</b> In set 3, three DC_15 windows hold 65 of the network's 115 misses.",
-    "<b>Fast shooting in a loud background (X04)</b> is mostly missed by both new detectors.",
+    "<b>The test sets are small.</b> In set 3, one DC_15 window (Y10) holds 19 of the network's %d "
+    "misses." % (T3["shots"] - T3["network"]["found"]),
+    "<b>Fast shooting in a loud background (X04)</b> is mostly missed by the shape-based detector.",
     "<b>Shape-based detector: long multi-pulse shots.</b> It can miss the shot, mark a later pulse "
     "instead of the first, or make two detections in one shot. Its train rule also rejects some real "
     "faint shots when too few neighbours are detected.",
-    "<b>Network: confidence on faint shots.</b> At a very low threshold it reaches 97% of the shots in "
+    "<b>Network: confidence on faint shots.</b> At a threshold of 0.10 it reaches 97% of the shots in "
     "set 2, but precision falls to 0.69. It notices most of the shots it misses and scores them too low.",
+    "<b>Network: the third labelling round did not improve set 2,</b> only shifted its trade-off towards "
+    "more detections (section 7). Its gain is so far shown only at the three sites of set 3.",
     "<b>Network: practical differences.</b> It needs Python and the trained model files, its results "
     "depend on which model version is used, it gives no durations, and a script to run it over a whole "
     "deployment has not been written yet.",
@@ -519,10 +548,10 @@ s += [KeepTogether([P("10. Status and next steps", h1), table([
     ["Item", "Status"],
     ["Bug fixes to the original", "Pull request #2 is open and awaiting review. Nothing has been merged."],
     ["Repository layout", "One folder per detector (xcorr_original, xcorr_shape, cnn) and a shared "
-     "evaluation folder, on a local branch. Not committed and not yet proposed for the main repository."],
+     "evaluation folder, proposed in a second pull request. Nothing has been merged."],
     ["Shape-based detector", "Tuning stopped. Ready to run on whole deployments (run_xcorr_shape.m)."],
-    ["Network", "A third labelling round (train 3, 97 windows, half at DC_15) is prepared, aimed at faint "
-     "shots and fast shooting. A whole-deployment run script is still to be written."],
+    ["Network", "Trained on three labelling rounds. A script to run it over a whole deployment is still "
+     "to be written."],
     ["Second pass on set 3", "Ten windows to be labelled again to measure label repeatability."],
 ], [2.2, 4.8])])]
 

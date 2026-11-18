@@ -9,7 +9,10 @@ threshold, so the test sets play no part in any choice.
 --mix P (optional): for a fraction P of the training crops, a stretch of a
 training window without airguns is added on top (as sound power, at a random
 level), to make more examples of shots in ship noise and other loud background.
-Writes cnn/models/<name>.pt and cnn/models/<name>_detections_<set>.csv.
+Writes cnn/models/<name>.pt and cnn/models/<name>_detections_<set>.csv, and
+cnn/models/<name>_history.csv: for every epoch the loss on the training crops
+and on the held-back windows, and every 5 epochs how many held-back shots are
+found (plot_history.py draws it).
 """
 import argparse
 import csv
@@ -66,6 +69,16 @@ def predict(model, windows):
     return out
 
 
+def heldback_loss(model, windows, loss_fn):
+    """Mean loss over the held-back windows (whole windows, no cropping or masking)."""
+    model.eval()
+    tot = 0.0
+    with torch.no_grad():
+        for w in windows:
+            tot += loss_fn(model(torch.from_numpy(w["S"]).unsqueeze(0)), torch.from_numpy(w["y"]).unsqueeze(0)).item()
+    return tot / len(windows)
+
+
 def best_threshold(windows, probs):
     """Threshold that gives the most shots found minus spare detections on held-back training windows."""
     best = (None, -1e9)
@@ -104,6 +117,7 @@ def main():
     sched = torch.optim.lr_scheduler.OneCycleLR(opt, max_lr=2e-3, total_steps=a.epochs * int(np.ceil(len(trn) / 8)))
     loss_fn = nn.BCEWithLogitsLoss(pos_weight=torch.tensor(3.0))
     t0 = time.time()
+    history = []
     for ep in range(a.epochs):
         model.train()
         tot = 0.0
@@ -114,6 +128,12 @@ def main():
             opt.step()
             sched.step()
             tot += loss.item()
+        row = [ep + 1, tot / max(1, int(np.ceil(len(trn) / 8))), heldback_loss(model, val, loss_fn), "", ""]
+        if (ep + 1) % 5 == 0:                          # shots found and spare detections on held-back windows at 0.5
+            pv = predict(model, val)
+            tv, _ = score.score_set(val, {w["window"]: score.pick(pv[w["window"]], 0.5) for w in val})
+            row[3:] = [tv["found"], tv["extra"] + tv["false"]]
+        history.append(row)
         if (ep + 1) % 10 == 0 or ep == 0:
             print(flush=True, end="")
             print("epoch %3d  loss %.4f  (%.0f s)" % (ep + 1, tot / max(1, int(np.ceil(len(trn) / 8))), time.time() - t0))
@@ -121,6 +141,10 @@ def main():
     thr = best_threshold(val, predict(model, val))
     print("threshold chosen on held-back training windows: %.2f" % thr)
     os.makedirs(os.path.join(HERE, "models"), exist_ok=True)
+    with open(os.path.join(HERE, "models", a.name + "_history.csv"), "w", newline="") as f:
+        c = csv.writer(f)
+        c.writerow(["epoch", "train_loss", "heldback_loss", "heldback_found", "heldback_spare", "heldback_shots"])
+        c.writerows([r + [sum(len(w["marks"]) for w in val)] for r in history])
     torch.save(dict(state=model.state_dict(), n_freq=pool[0]["S"].shape[0], threshold=thr),
                os.path.join(HERE, "models", a.name + ".pt"))
 

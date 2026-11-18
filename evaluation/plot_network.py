@@ -5,7 +5,7 @@
 Top:    the input, a normalised spectrogram of a real window, with the reviewed shot marks.
 Middle: the layers of the network, with the size of the data after each one.
 Bottom: the output, the probability of a shot start every 0.1 s (average of the
-        train12_seed* copies), the threshold, and the peaks taken as detections.
+        train123mix_seed* copies), the threshold, and the peaks taken as detections.
 Writes figures/M_network.png.
 """
 import os
@@ -44,7 +44,7 @@ def arrow(ax, x0, x1, y):
 
 def main():
     w = [q for q in data.cache_set(SET) if q["window"] == WIN][0]
-    models, thrs = ensemble.load("train12_seed")
+    models, thrs = ensemble.load("train123mix_seed")
     thr = round(float(np.mean(thrs)) / 0.05) * 0.05
     with torch.no_grad():
         x = torch.from_numpy(w["S"]).unsqueeze(0)

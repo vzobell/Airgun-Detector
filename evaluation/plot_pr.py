@@ -6,8 +6,8 @@
 Needs pr_curve.csv (written by sweep_pr.m: the original detector and the
 prototype over a range of settings) and the trained networks in cnn/models.
 The network curve comes from sweeping the detection threshold on the average
-of the copies trained on train1 + train2 (train12_seed*); the average of the
-copies trained on train1 alone is drawn as a dashed line for comparison.
+of the copies trained on all three labelling rounds (train123mix_seed*); the average of the
+copies trained on the first two rounds (train12_seed*) is drawn as a dashed line.
 
     recall    = shots found / shots marked
     precision = detections that hold a shot / all detections
@@ -70,14 +70,14 @@ def main():
         p = {k: int(float(r[k])) for k in ("shots", "detections", "found", "spare", "step", "current")}
         mat.setdefault((r["detector"], r["set"]), []).append(p)
     net = "--no-network" not in sys.argv
-    new, thr_new = cnn_curve("train12_seed") if net else (None, None)
-    old, thr_old = cnn_curve("train1_seed") if net else (None, None)
-    main_cnn, main_thr, main_label = (new, thr_new, "Network (train1 + train2)") if new else (old, thr_old, "Network (train1)")
+    new, thr_new = cnn_curve("train123mix_seed") if net else (None, None)
+    old, thr_old = cnn_curve("train12_seed") if net else (None, None)
+    main_cnn, main_thr, main_label = (new, thr_new, "Network (three labelling rounds)") if new else (old, thr_old, "Network (two labelling rounds)")
 
     with open(os.path.join(HERE, "pr_curve_cnn.csv" if net else os.devnull), "w", newline="") as f:
         c = csv.writer(f)
         c.writerow(["network", "set", "threshold", "current", "shots", "detections", "found", "spare", "recall", "precision"])
-        for name, cur, used in (("train1 + train2", new, thr_new), ("train1", old, thr_old)):
+        for name, cur, used in (("three rounds", new, thr_new), ("two rounds", old, thr_old)):
             if cur is None:
                 continue
             for s, _ in SETS:
@@ -95,7 +95,7 @@ def main():
             ax.plot(xy[k, 0], xy[k, 1], mk, ms=12, mfc="none", mec=COL[det], mew=2)
         if new and old:
             xy = np.array([pr(p) for p in old[s]])
-            ax.plot(xy[:, 0], xy[:, 1], "--", color=COL["cnn"], lw=1.5, label="Network (train1 only)")
+            ax.plot(xy[:, 0], xy[:, 1], "--", color=COL["cnn"], lw=1.5, label="Network (two labelling rounds)")
         if net:
             xy = np.array([pr(p) for p in main_cnn[s]])
             ax.plot(xy[:, 0], xy[:, 1], "-", color=COL["cnn"], lw=2, marker="^", ms=4, label=main_label)
