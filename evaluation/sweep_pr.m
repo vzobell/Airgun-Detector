@@ -1,6 +1,6 @@
 function sweep_pr
 % SWEEP_PR  Precision and recall of the original detector and the prototype
-% over a range of settings, from strict to lenient, on set 1 and set 2.
+% over a range of settings, from strict to lenient, on sets 1, 2 and 3.
 %
 %   recall    = shots found / shots marked
 %   precision = detections that hold a shot / all detections
@@ -40,8 +40,8 @@ protoS = {'0.8',  '0.95',  'Inf',    'Inf',   0
           '0.3',  '0.55',  '0.75',   '6',     0
           '0.2',  '0.45',  '0.5',    '4',     0
           '0.1',  '0.35',  '0.25',   '2',     0};
-sets = {'set1','set2'}; rows = {};
-for s = 1:2
+sets = {'set1','set2','set3'}; rows = {};
+for s = 1:numel(sets)
     for i = 1:size(origS,1)
         T = score_detector('pr_tmp',{'minCorrThresh',origS{i,1}; 'parm.c2_offset',origS{i,2}},'',sets{s});
         rows(end+1,:) = add(T,'original',sprintf('floor %s offset %s',origS{i,1:2}),i,origS{i,3},s); %#ok<AGROW>
@@ -54,7 +54,7 @@ for s = 1:2
 end
 R = cell2table(rows,'VariableNames',{'detector','setting','step','current','set','shots','detections','found','spare'});
 writetable(R,fullfile(here,'pr_curve.csv'));
-for s = 1:2                                  % remove the temporary score files
+for s = 1:numel(sets)                        % remove the temporary score files
     delete(fullfile(here,sets{s},'*_pr_tmp.csv'));
 end
 end

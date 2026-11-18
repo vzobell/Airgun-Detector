@@ -1,4 +1,4 @@
-"""Precision-recall curves for the three detectors on set 1 and set 2.
+"""Precision-recall curves for the three detectors on sets 1, 2 and 3.
 
     python plot_pr.py                 all three detectors
     python plot_pr.py --no-network    the two cross-correlation detectors only
@@ -6,8 +6,7 @@
 Needs pr_curve.csv (written by sweep_pr.m: the original detector and the
 prototype over a range of settings) and the trained networks in cnn/models.
 The network curve comes from sweeping the detection threshold on the average
-of the copies trained on all three labelling rounds (train123mix_seed*); the average of the
-copies trained on the first two rounds (train12_seed*) is drawn as a dashed line.
+of the network (cnn/models/network_airgun.pt).
 
     recall    = shots found / shots marked
     precision = detections that hold a shot / all detections
@@ -30,7 +29,7 @@ import data          # noqa: E402
 import score         # noqa: E402
 import ensemble      # noqa: E402
 
-SETS = [("set1", "Set 1 (22 windows, 313 shots)"), ("set2", "Set 2 (28 windows, 546 shots)")]
+SETS = [("set1", "Set 1"), ("set2", "Set 2"), ("set3", "Set 3")]
 COL = {"original": "#D55E00", "prototype": "#0072B2", "cnn": "#009E73"}
 THRS = np.round(np.arange(0.05, 0.96, 0.05), 2)
 
@@ -70,9 +69,9 @@ def main():
         p = {k: int(float(r[k])) for k in ("shots", "detections", "found", "spare", "step", "current")}
         mat.setdefault((r["detector"], r["set"]), []).append(p)
     net = "--no-network" not in sys.argv
-    new, thr_new = cnn_curve("train123mix_seed") if net else (None, None)
-    old, thr_old = cnn_curve("train12_seed") if net else (None, None)
-    main_cnn, main_thr, main_label = (new, thr_new, "Network (three labelling rounds)") if new else (old, thr_old, "Network (two labelling rounds)")
+    new, thr_new = cnn_curve("network_airgun") if net else (None, None)
+    old, thr_old = None, None                     # one line per detector; earlier versions are in cnn/archived
+    main_cnn, main_thr, main_label = (new, thr_new, "Network (CNN)") if new else (old, thr_old, "Network (CNN), earlier version")
 
     with open(os.path.join(HERE, "pr_curve_cnn.csv" if net else os.devnull), "w", newline="") as f:
         c = csv.writer(f)
@@ -85,33 +84,34 @@ def main():
                     c.writerow([name, s, "%.2f" % p["thr"], int(abs(p["thr"] - used) < 1e-6), p["shots"], p["detections"],
                                 p["found"], p["spare"], "%.3f" % pr(p)[0], "%.3f" % pr(p)[1]])
 
-    fig, axes = plt.subplots(1, 2, figsize=(11, 5.2), sharey=True)
-    for ax, (s, title) in zip(axes, SETS):
-        for det, label, mk in (("original", "Original", "o"), ("prototype", "Shape-based cross-correlation", "s")):
-            pts = sorted(mat[(det, s)], key=lambda p: p["step"])
-            xy = np.array([pr(p) for p in pts])
-            ax.plot(xy[:, 0], xy[:, 1], "-", color=COL[det], lw=2, marker=mk, ms=4, label=label)
-            k = [i for i, p in enumerate(pts) if p["current"]][0]
-            ax.plot(xy[k, 0], xy[k, 1], mk, ms=12, mfc="none", mec=COL[det], mew=2)
-        if new and old:
-            xy = np.array([pr(p) for p in old[s]])
-            ax.plot(xy[:, 0], xy[:, 1], "--", color=COL["cnn"], lw=1.5, label="Network (two labelling rounds)")
-        if net:
-            xy = np.array([pr(p) for p in main_cnn[s]])
-            ax.plot(xy[:, 0], xy[:, 1], "-", color=COL["cnn"], lw=2, marker="^", ms=4, label=main_label)
-            k = int(np.argmin([abs(p["thr"] - main_thr) for p in main_cnn[s]]))
-            ax.plot(xy[k, 0], xy[k, 1], "^", ms=13, mfc="none", mec=COL["cnn"], mew=2)
-        ax.set_title(title, fontsize=11, loc="left")
-        ax.set_xlabel("Recall (shots found / shots marked)")
-        ax.set_xlim(0, 1.02)
-        ax.set_ylim(0, 1.02)
-        ax.grid(color="0.9", lw=0.8)
-        ax.set_axisbelow(True)
-        for side in ("top", "right"):
-            ax.spines[side].set_visible(False)
-    axes[0].set_ylabel("Precision (detections on a shot / all detections)")
-    axes[0].plot([], [], "o", ms=11, mfc="none", mec="0.3", mew=2, label="Setting in use")
-    axes[0].legend(loc="lower left", frameon=False, fontsize=9)
+    fig, axes2 = plt.subplots(2, 3, figsize=(15.5, 10.4), sharey="row")
+    for axes, zoom in zip(axes2, (False, True)):
+        for ax, (s, title) in zip(axes, SETS):
+            for det, label, mk in (("original", "Original", "o"), ("prototype", "Shape-based cross-correlation", "s")):
+                pts = sorted(mat[(det, s)], key=lambda p: p["step"])
+                xy = np.array([pr(p) for p in pts])
+                ax.plot(xy[:, 0], xy[:, 1], "-", color=COL[det], lw=2, marker=mk, ms=4, label=label)
+                k = [i for i, p in enumerate(pts) if p["current"]][0]
+                ax.plot(xy[k, 0], xy[k, 1], mk, ms=12, mfc="none", mec=COL[det], mew=2)
+            if new and old:
+                xy = np.array([pr(p) for p in old[s]])
+                ax.plot(xy[:, 0], xy[:, 1], "--", color=COL["cnn"], lw=1.5, label="Network (CNN), earlier version")
+            if net:
+                xy = np.array([pr(p) for p in main_cnn[s]])
+                ax.plot(xy[:, 0], xy[:, 1], "-", color=COL["cnn"], lw=2, marker="^", ms=4, label=main_label)
+                k = int(np.argmin([abs(p["thr"] - main_thr) for p in main_cnn[s]]))
+                ax.plot(xy[k, 0], xy[k, 1], "^", ms=13, mfc="none", mec=COL["cnn"], mew=2)
+            ax.set_title("%s (%d shots)%s" % (title, mat[("original", s)][0]["shots"], ", upper right corner enlarged" if zoom else ""), fontsize=11, loc="left")
+            ax.set_xlabel("Recall (shots found / shots marked)")
+            ax.set_xlim(*((0.5, 1.005) if zoom else (0, 1.02)))
+            ax.set_ylim(*((0.6, 1.005) if zoom else (0, 1.02)))
+            ax.grid(color="0.9", lw=0.8)
+            ax.set_axisbelow(True)
+            for side in ("top", "right"):
+                ax.spines[side].set_visible(False)
+        axes[0].set_ylabel("Precision (detections on a shot / all detections)")
+    axes2[0][0].plot([], [], "o", ms=11, mfc="none", mec="0.3", mew=2, label="Setting in use")
+    axes2[0][0].legend(loc="lower left", frameon=False, fontsize=9)
     fig.tight_layout()
     os.makedirs(os.path.join(HERE, "figures"), exist_ok=True)
     out = os.path.join(HERE, "figures", "PR_curves.png" if net else "PR_curves_xcorr.png")

@@ -1,13 +1,21 @@
-"""Average several trained networks and score the average.
+"""Run and score the network, and pack its copies into one file.
 
-    python ensemble.py train12_seed set1 set2
-    python ensemble.py train1_seed set1 set2 --threshold 0.45
+    python ensemble.py network_airgun set1 set2 set3
+    python ensemble.py network_airgun set3 --threshold 0.5
+    python ensemble.py --pack train123mix_seed network_airgun
 
-The first argument is the start of the model names (all cnn/models/<prefix>*.pt
-are averaged). The probabilities of the copies are averaged before peaks are
-picked. The threshold is the mean of the thresholds each copy chose on its own
-held-back training windows, rounded to 0.05, unless --threshold is given.
-Writes cnn/models/<prefix>avg_detections_<set>.csv and prints the scores.
+The network is trained several times from different random starts
+(train.py --seed 1, 2, ...), because single copies differ noticeably; the
+probabilities of the copies are averaged before peaks are picked.
+
+--pack writes all copies whose names start with the given text into one file,
+models/<name>.pt, together with the threshold to use (the mean of the
+thresholds each copy chose on its own held-back training windows, rounded to
+0.05). That one file is then the detector.
+
+Scoring takes either a packed file's name or the start of the copies' names,
+looks in models/ and then archived/, and writes
+models/<name>_detections_<set>.csv.
 """
 import argparse
 import csv
@@ -22,43 +30,86 @@ import score
 from model import ShotNet
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+FOLDERS = [os.path.join(HERE, "models"), os.path.join(HERE, "archived")]
 
 
-def load(prefix):
-    models, thr = [], []
-    for p in sorted(glob.glob(os.path.join(HERE, "models", prefix + "*.pt"))):
-        ck = torch.load(p)
-        m = ShotNet(ck["n_freq"])
-        m.load_state_dict(ck["state"])
-        m.eval()
-        models.append(m)
-        thr.append(ck["threshold"])
-    return models, thr
+def _build(n_freq, state):
+    m = ShotNet(n_freq)
+    m.load_state_dict(state)
+    m.eval()
+    return m
+
+
+def load(name):
+    """Models and thresholds for a packed file (models/<name>.pt) or for all copies named <name>*.pt."""
+    for folder in FOLDERS:
+        p = os.path.join(folder, name + ".pt")
+        if os.path.exists(p):
+            ck = torch.load(p)
+            if "states" in ck:
+                return [_build(ck["n_freq"], st) for st in ck["states"]], [ck["threshold"]]
+    for folder in FOLDERS:
+        models, thr = [], []
+        for p in sorted(glob.glob(os.path.join(folder, name + "*.pt"))):
+            ck = torch.load(p)
+            if "state" in ck:
+                models.append(_build(ck["n_freq"], ck["state"]))
+                thr.append(ck["threshold"])
+        if models:
+            return models, thr
+    return [], []
+
+
+def threshold_of(thrs):
+    return round(float(np.mean(thrs)) / 0.05) * 0.05
+
+
+def probability(models, S):
+    """Average shot-start probability of the copies for one spectrogram, one value per time step."""
+    with torch.no_grad():
+        x = torch.from_numpy(S).unsqueeze(0)
+        return np.mean([torch.sigmoid(m(x))[0].numpy() for m in models], axis=0)
+
+
+def pack(prefix, name):
+    states, thrs, n_freq, files = [], [], None, []
+    for folder in FOLDERS:
+        for p in sorted(glob.glob(os.path.join(folder, prefix + "*.pt"))):
+            ck = torch.load(p)
+            if "state" in ck:
+                states.append(ck["state"])
+                thrs.append(ck["threshold"])
+                n_freq = ck["n_freq"]
+                files.append(os.path.basename(p))
+        if states:
+            break
+    assert states, "no models found whose names start with " + prefix
+    out = os.path.join(HERE, "models", name + ".pt")
+    torch.save(dict(states=states, n_freq=n_freq, threshold=threshold_of(thrs), copies=files, copy_thresholds=thrs), out)
+    print("packed %d copies (%s) into %s, threshold %.2f" % (len(states), ", ".join(files), out, threshold_of(thrs)))
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("prefix")
-    ap.add_argument("sets", nargs="+")
+    ap.add_argument("name")
+    ap.add_argument("sets", nargs="*")
     ap.add_argument("--threshold", type=float, default=None)
+    ap.add_argument("--pack", action="store_true", help="pack copies named <name>* into models/<sets[0]>.pt")
     a = ap.parse_args()
+    if a.pack:
+        pack(a.name, a.sets[0])
+        return
 
-    models, thrs = load(a.prefix)
-    thr = a.threshold if a.threshold is not None else round(float(np.mean(thrs)) / 0.05) * 0.05
-    print("%d networks averaged (own thresholds %s), threshold used %.2f" %
-          (len(models), ", ".join("%.2f" % t for t in thrs), thr))
+    models, thrs = load(a.name)
+    thr = a.threshold if a.threshold is not None else threshold_of(thrs)
+    print("%d copies averaged, threshold used %.2f" % (len(models), thr))
     for s in a.sets:
         ws = data.cache_set(s)
-        dets = {}
-        with torch.no_grad():
-            for w in ws:
-                x = torch.from_numpy(w["S"]).unsqueeze(0)
-                p = np.mean([torch.sigmoid(m(x))[0].numpy() for m in models], axis=0)
-                dets[w["window"]] = score.pick(p, thr)
+        dets = {w["window"]: score.pick(probability(models, w["S"]), thr) for w in ws}
         tot, rows = score.score_set(ws, dets)
         print("RESULT %-5s %s" % (s, score.describe(tot)))
         print("DETAIL " + " | ".join("%s %d/%d s%d" % (r["window"], r["found"], r["shots"], r["spare"]) for r in rows))
-        with open(os.path.join(HERE, "models", "%savg_detections_%s.csv" % (a.prefix, s)), "w", newline="") as f:
+        with open(os.path.join(HERE, "models", "%s_detections_%s.csv" % (a.name, s)), "w", newline="") as f:
             c = csv.writer(f)
             c.writerow(["window", "start_s", "end_s"])
             for w in ws:

@@ -91,7 +91,8 @@ def used_days():
 
 def load_models():
     models = []
-    for p in sorted(glob.glob(os.path.join(HERE, "models", MODELS))):
+    # the models that chose earlier rounds are now in archived/
+    for p in sorted(glob.glob(os.path.join(HERE, "models", MODELS)) + glob.glob(os.path.join(HERE, "archived", MODELS))):
         ck = torch.load(p)
         m = ShotNet(ck["n_freq"])
         m.load_state_dict(ck["state"])

@@ -2,7 +2,7 @@
 
     python plot_history.py hist80 hist160
 
-Reads models/<name>_history.csv (written by train.py) and draws, per run:
+Reads <name>_history.csv from models/ or archived/ (written by train.py) and draws, per run:
   left:  the loss on the training crops and on the held-back windows
   right: the share of held-back shots found, and spare detections per 100
          shots, at a fixed threshold of 0.5 (every 5 epochs)
@@ -25,7 +25,8 @@ TRAIN, HELD, SPARE = "#0072B2", "#D55E00", "#666666"
 
 fig, axes = plt.subplots(len(names), 2, figsize=(11, 3.6 * len(names)), squeeze=False)
 for row, name in zip(axes, names):
-    H = list(csv.DictReader(open(os.path.join(HERE, "models", name + "_history.csv"))))
+    folder = "models" if os.path.exists(os.path.join(HERE, "models", name + "_history.csv")) else "archived"
+    H = list(csv.DictReader(open(os.path.join(HERE, folder, name + "_history.csv"))))
     ep = [int(r["epoch"]) for r in H]
     ax = row[0]
     ax.plot(ep, [float(r["train_loss"]) for r in H], color=TRAIN, lw=2, label="training crops")
