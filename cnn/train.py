@@ -98,6 +98,7 @@ def main():
     ap.add_argument("--name", default="model")
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--mix", type=float, default=0.0)
+    ap.add_argument("--arch", default="base", help="network variant (see model.ARCHS)")
     a = ap.parse_args()
 
     torch.manual_seed(a.seed)
@@ -111,7 +112,7 @@ def main():
     print("training windows %d (%d shots), held back %d (%d shots); loaded in %.0f s" %
           (len(trn), sum(len(w["marks"]) for w in trn), len(val), sum(len(w["marks"]) for w in val), time.time() - t0))
 
-    model = ShotNet(pool[0]["S"].shape[0])
+    model = ShotNet(pool[0]["S"].shape[0], a.arch)
     print("network parameters: %d" % count_parameters(model))
     opt = torch.optim.AdamW(model.parameters(), lr=2e-3, weight_decay=1e-3)
     sched = torch.optim.lr_scheduler.OneCycleLR(opt, max_lr=2e-3, total_steps=a.epochs * int(np.ceil(len(trn) / 8)))
@@ -145,7 +146,7 @@ def main():
         c = csv.writer(f)
         c.writerow(["epoch", "train_loss", "heldback_loss", "heldback_found", "heldback_spare", "heldback_shots"])
         c.writerows([r + [sum(len(w["marks"]) for w in val)] for r in history])
-    torch.save(dict(state=model.state_dict(), n_freq=pool[0]["S"].shape[0], threshold=thr),
+    torch.save(dict(state=model.state_dict(), n_freq=pool[0]["S"].shape[0], threshold=thr, arch=a.arch),
                os.path.join(HERE, "models", a.name + ".pt"))
 
     for s in a.test:

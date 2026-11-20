@@ -32,13 +32,39 @@ class Block1d(nn.Module):
         return x + self.net(x)
 
 
-class ShotNet(nn.Module):
-    def __init__(self, n_freq, width=64):
+class GRUContext(nn.Module):
+    """Two-way recurrent layer along time (the "CRNN" alternative to the dilated convolutions)."""
+    def __init__(self, ch):
         super().__init__()
-        self.front = nn.Sequential(Block2d(1, 16, 2), Block2d(16, 32, 2), Block2d(32, 48, 2), Block2d(48, 64, 3))
+        self.gru = nn.GRU(ch, ch // 2, batch_first=True, bidirectional=True)
+
+    def forward(self, x):                              # (B, ch, T)
+        return x + self.gru(x.transpose(1, 2))[0].transpose(1, 2)
+
+
+# Variants compared for the manuscript. "base" is the network in use.
+ARCHS = {
+    "base":  dict(filters=(16, 32, 48, 64), width=64, dilations=(1, 2, 4, 8, 16, 32, 64)),
+    "short": dict(filters=(16, 32, 48, 64), width=64, dilations=(1, 2)),           # about +-1 s of context
+    "small": dict(filters=(8, 16, 24, 32), width=32, dilations=(1, 2, 4, 8, 16, 32, 64)),
+    "large": dict(filters=(32, 64, 96, 128), width=128, dilations=(1, 2, 4, 8, 16, 32, 64)),
+    "crnn":  dict(filters=(16, 32, 48, 64), width=64, dilations=None),             # recurrent layer instead
+}
+
+
+class ShotNet(nn.Module):
+    def __init__(self, n_freq, arch="base"):
+        super().__init__()
+        c = ARCHS[arch]
+        f1, f2, f3, f4 = c["filters"]
+        width = c["width"]
+        self.front = nn.Sequential(Block2d(1, f1, 2), Block2d(f1, f2, 2), Block2d(f2, f3, 2), Block2d(f3, f4, 3))
         f_out = n_freq // 2 // 2 // 2 // 3
-        self.squeeze = nn.Sequential(nn.Conv1d(64 * f_out, width, 1), nn.BatchNorm1d(width), nn.ReLU(inplace=True))
-        self.context = nn.Sequential(*[Block1d(width, d) for d in (1, 2, 4, 8, 16, 32, 64)])
+        self.squeeze = nn.Sequential(nn.Conv1d(f4 * f_out, width, 1), nn.BatchNorm1d(width), nn.ReLU(inplace=True))
+        if c["dilations"] is None:
+            self.context = GRUContext(width)
+        else:
+            self.context = nn.Sequential(*[Block1d(width, d) for d in c["dilations"]])
         self.head = nn.Conv1d(width, 1, 1)
 
     def forward(self, x):
@@ -54,6 +80,6 @@ def count_parameters(model):
 
 
 if __name__ == "__main__":
-    m = ShotNet(99)
-    print("parameters:", count_parameters(m))
-    print(m(torch.zeros(2, 99, 3001)).shape)
+    for a in ARCHS:
+        m = ShotNet(99, a)
+        print("%-6s parameters: %7d" % (a, count_parameters(m)), tuple(m(torch.zeros(2, 99, 3001)).shape))

@@ -33,8 +33,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 FOLDERS = [os.path.join(HERE, "models"), os.path.join(HERE, "archived")]
 
 
-def _build(n_freq, state):
-    m = ShotNet(n_freq)
+def _build(n_freq, state, arch="base"):
+    m = ShotNet(n_freq, arch)
     m.load_state_dict(state)
     m.eval()
     return m
@@ -47,13 +47,13 @@ def load(name):
         if os.path.exists(p):
             ck = torch.load(p)
             if "states" in ck:
-                return [_build(ck["n_freq"], st) for st in ck["states"]], [ck["threshold"]]
+                return [_build(ck["n_freq"], st, ck.get("arch", "base")) for st in ck["states"]], [ck["threshold"]]
     for folder in FOLDERS:
         models, thr = [], []
         for p in sorted(glob.glob(os.path.join(folder, name + "*.pt"))):
             ck = torch.load(p)
             if "state" in ck:
-                models.append(_build(ck["n_freq"], ck["state"]))
+                models.append(_build(ck["n_freq"], ck["state"], ck.get("arch", "base")))
                 thr.append(ck["threshold"])
         if models:
             return models, thr
@@ -79,13 +79,13 @@ def pack(prefix, name):
             if "state" in ck:
                 states.append(ck["state"])
                 thrs.append(ck["threshold"])
-                n_freq = ck["n_freq"]
+                n_freq, arch = ck["n_freq"], ck.get("arch", "base")
                 files.append(os.path.basename(p))
         if states:
             break
     assert states, "no models found whose names start with " + prefix
     out = os.path.join(HERE, "models", name + ".pt")
-    torch.save(dict(states=states, n_freq=n_freq, threshold=threshold_of(thrs), copies=files, copy_thresholds=thrs), out)
+    torch.save(dict(states=states, n_freq=n_freq, arch=arch, threshold=threshold_of(thrs), copies=files, copy_thresholds=thrs), out)
     print("packed %d copies (%s) into %s, threshold %.2f" % (len(states), ", ".join(files), out, threshold_of(thrs)))
 
 

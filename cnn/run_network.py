@@ -6,7 +6,9 @@
 
 Each deployment is a folder name under --root (default the lab server,
 //frosty.ucsd.edu/GofMX_Decimated_8) or a full path. Every *df100.x.wav in
-its *_df100 disk folders (or directly in the folder) is processed.
+its disk folders (or directly in the folder) is processed, as is every
+*.d100.x.wav (the naming of the older GofMX deployments, whose df100 files sit
+in folders named *_df20).
 
 Output has the same layout as the original detector (xcorr_airgun_df100.m):
 a folder <out>/<deployment>_AirgunDetections with one .mat per xwav, named
@@ -228,7 +230,7 @@ def main():
     ap.add_argument("--root", default=ROOT)
     ap.add_argument("--model", default="network_airgun")
     ap.add_argument("--threshold", type=float, default=None, help="default: the one stored with the model")
-    ap.add_argument("--mask", default="*df100.x.wav", help="which files to process")
+    ap.add_argument("--mask", nargs="+", default=["*df100.x.wav", "*.d100.x.wav"], help="which files to process")
     ap.add_argument("--batch", type=int, default=8)
     ap.add_argument("--overwrite", action="store_true")
     ap.add_argument("--segments", type=int, nargs=2, metavar=("FIRST", "COUNT"),
@@ -245,9 +247,9 @@ def main():
     for dep in a.deployments:
         base = dep if os.path.isdir(dep) else os.path.join(a.root, dep)
         name = os.path.basename(os.path.normpath(base))
-        files = sorted(set(glob.glob(os.path.join(base, "*_df100", a.mask)) + glob.glob(os.path.join(base, a.mask))))
+        files = sorted({f for m in a.mask for f in glob.glob(os.path.join(base, "*", m)) + glob.glob(os.path.join(base, m))})
         if not files:
-            print("%s: no files matching %s found under %s" % (name, a.mask, base))
+            print("%s: no files matching %s found under %s" % (name, " or ".join(a.mask), base))
             continue
         folder = os.path.join(a.out, name + "_AirgunDetections")
         os.makedirs(folder, exist_ok=True)

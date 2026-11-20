@@ -1,0 +1,16 @@
+window,status,shots
+G01,airguns,49
+G02,airguns,43
+G03,airguns,22
+G04,airguns,35
+G06,airguns,42
+G07,airguns,18
+G08,airguns,40
+G09,airguns,28
+G10,airguns,23
+G11,airguns,25
+G12,airguns,11
+G13,airguns,27
+G14,airguns,26
+G17,airguns,22
+G18,no airguns,0

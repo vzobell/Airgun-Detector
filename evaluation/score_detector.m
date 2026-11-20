@@ -34,7 +34,6 @@ if nargin < 4 || isempty(setName), setName = 'set1'; end
 if nargin < 3 || isempty(detectorFile), detectorFile = fullfile(fileparts(fileparts(mfilename('fullpath'))),'xcorr_original','xcorr_airgun_df100.m'); end
 fs = 2000; N = 150000; blk = 4; tol = 2;      % tol: seconds of slack when matching a shot to a detection
 here = fileparts(mfilename('fullpath')); repo = fileparts(here); setDir = fullfile(here,setName);
-root = '//frosty.ucsd.edu/GofMX_Decimated_8';
 addpath(fullfile(repo,'xcorr_original'));
 if isempty(which('utFindFiles'))               % the detector needs Triton's file finder
     addpath(fullfile(fileparts(repo),'Triton','Remoras','Logger'));
@@ -83,7 +82,7 @@ if exist(fullfile(setDir,'humps.csv'),'file')
 end   % "unknown" windows stay in, scored as no airguns, and are flagged in the status column
 nW = height(W); res = zeros(nW,7); mins = cell(0,4); dets = cell(0,3); feats = cell(0,11); cands = cell(0,11);
 for i = 1:nW
-    d = dir(fullfile(root,"GOM_" + W.site(i),'*_df100',W.file(i)));
+    d = find_xwav(W.site(i),W.file(i));
     assert(numel(d)==1,'file not found for %s',W.window(i));
     folder = strrep(d.folder,'\','/'); out = fullfile(work,char(W.window(i))); mkdir(out);
     setenv('AG_DEPL',[folder(1:end-1) '*']); setenv('AG_OUT',out); setenv('AG_MASK',char(W.file(i)));

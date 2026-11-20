@@ -33,7 +33,7 @@ function review_marks(setName,selftest)
 
 if nargin < 1 || isempty(setName), setName = 'set1'; end
 if nargin < 2, selftest = false; end
-fs = 2000; N = 150000; blk = 4; root = '//frosty.ucsd.edu/GofMX_Decimated_8';
+fs = 2000; N = 150000; blk = 4;
 here = fileparts(mfilename('fullpath')); setDir = fullfile(here,setName);
 truthFile = fullfile(setDir,'truth.csv'); reviewFile = fullfile(setDir,'review.csv');
 
@@ -98,7 +98,7 @@ end
     function loadWindow(i)
         if ~isempty(cache{i}), return, end
         title(ax1,sprintf('Loading %s ...',W.window(i)),'FontWeight','normal'); drawnow;
-        d = dir(fullfile(root,"GOM_" + W.site(i),'*_df100',W.file(i)));
+        d = find_xwav(W.site(i),W.file(i));
         sg = W.start_segment(i);
         y = double(audioread(fullfile(d(1).folder,d(1).name),[(sg-1)*N+1,(sg+blk-1)*N],'native')); y = y-mean(y);
         [~,F,T,P] = spectrogram(y,hann(2000),1600,2000,fs); keep = F <= 250;

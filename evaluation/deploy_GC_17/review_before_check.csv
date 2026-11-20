@@ -1,0 +1,49 @@
+window,status,shots
+G01,airguns,60
+G02,airguns,33
+G03,airguns,54
+G04,airguns,55
+G05,airguns,57
+G06,airguns,50
+G07,airguns,74
+G08,airguns,50
+G09,no airguns,0
+G10,airguns,41
+G11,airguns,54
+G12,airguns,63
+G13,airguns,24
+G14,airguns,49
+G15,airguns,51
+G16,airguns,48
+G17,airguns,40
+G18,airguns,40
+G19,airguns,42
+G20,airguns,48
+G21,no airguns,0
+G22,airguns,36
+G23,airguns,44
+G24,no airguns,0
+G25,airguns,19
+G26,airguns,43
+G27,airguns,42
+G28,airguns,44
+G29,airguns,54
+G30,airguns,52
+G31,airguns,15
+G32,airguns,43
+G33,airguns,43
+G34,airguns,50
+G35,airguns unclear,0
+G36,airguns,37
+G37,airguns,43
+G38,airguns,37
+G39,airguns,39
+G40,airguns,41
+G41,airguns,40
+G42,airguns,38
+G43,airguns,42
+G44,airguns unclear,0
+G45,airguns,25
+G46,airguns,26
+G47,airguns,43
+G48,airguns,29

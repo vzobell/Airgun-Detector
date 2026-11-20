@@ -1,0 +1,210 @@
+detector,setting,step,current,set,shots,detections,found,spare,site
+original,floor 1e17 offset 0.15,1,0,set3,265,0,0,0,DC_15
+original,floor 1e17 offset 0.15,1,0,set3,323,21,21,0,GC_15
+original,floor 1e17 offset 0.15,1,0,set3,199,3,3,0,MC_17
+original,floor 5e16 offset 0.15,2,0,set3,265,0,0,0,DC_15
+original,floor 5e16 offset 0.15,2,0,set3,323,79,78,1,GC_15
+original,floor 5e16 offset 0.15,2,0,set3,199,15,15,0,MC_17
+original,floor 2e16 offset 0.15,3,0,set3,265,0,0,0,DC_15
+original,floor 2e16 offset 0.15,3,0,set3,323,163,163,0,GC_15
+original,floor 2e16 offset 0.15,3,0,set3,199,15,15,0,MC_17
+original,floor 7e15 offset 0.15,4,1,set3,265,13,13,0,DC_15
+original,floor 7e15 offset 0.15,4,1,set3,323,239,232,7,GC_15
+original,floor 7e15 offset 0.15,4,1,set3,199,100,99,1,MC_17
+original,floor 3e15 offset 0.15,5,0,set3,265,44,37,7,DC_15
+original,floor 3e15 offset 0.15,5,0,set3,323,280,269,11,GC_15
+original,floor 3e15 offset 0.15,5,0,set3,199,140,139,1,MC_17
+original,floor 1e15 offset 0.15,6,0,set3,265,113,104,9,DC_15
+original,floor 1e15 offset 0.15,6,0,set3,323,302,269,33,GC_15
+original,floor 1e15 offset 0.15,6,0,set3,199,173,163,10,MC_17
+original,floor 3e14 offset 0.15,7,0,set3,265,178,165,13,DC_15
+original,floor 3e14 offset 0.15,7,0,set3,323,310,269,41,GC_15
+original,floor 3e14 offset 0.15,7,0,set3,199,186,163,23,MC_17
+original,floor 1e14 offset 0.15,8,0,set3,265,236,196,40,DC_15
+original,floor 1e14 offset 0.15,8,0,set3,323,310,269,41,GC_15
+original,floor 1e14 offset 0.15,8,0,set3,199,186,163,23,MC_17
+original,floor 0 offset 0.15,9,0,set3,265,262,196,66,DC_15
+original,floor 0 offset 0.15,9,0,set3,323,310,269,41,GC_15
+original,floor 0 offset 0.15,9,0,set3,199,186,163,23,MC_17
+original,floor 0 offset 0.05,10,0,set3,265,264,200,64,DC_15
+original,floor 0 offset 0.05,10,0,set3,323,320,262,58,GC_15
+original,floor 0 offset 0.05,10,0,set3,199,208,158,50,MC_17
+original,floor 0 offset 0,11,0,set3,265,249,199,50,DC_15
+original,floor 0 offset 0,11,0,set3,323,306,254,52,GC_15
+original,floor 0 offset 0,11,0,set3,199,196,152,44,MC_17
+prototype,weak 0.8 shape 0.95 loud Inf clear Inf,1,0,set3,265,0,0,0,DC_15
+prototype,weak 0.8 shape 0.95 loud Inf clear Inf,1,0,set3,323,11,11,0,GC_15
+prototype,weak 0.8 shape 0.95 loud Inf clear Inf,1,0,set3,199,0,0,0,MC_17
+prototype,weak 0.7 shape 0.9 loud Inf clear Inf,2,0,set3,265,41,41,0,DC_15
+prototype,weak 0.7 shape 0.9 loud Inf clear Inf,2,0,set3,323,91,91,0,GC_15
+prototype,weak 0.7 shape 0.9 loud Inf clear Inf,2,0,set3,199,44,44,0,MC_17
+prototype,weak 0.6 shape 0.85 loud 4 clear 16,3,0,set3,265,92,92,0,DC_15
+prototype,weak 0.6 shape 0.85 loud 4 clear 16,3,0,set3,323,220,219,1,GC_15
+prototype,weak 0.6 shape 0.85 loud 4 clear 16,3,0,set3,199,130,129,1,MC_17
+prototype,weak 0.5 shape 0.75 loud 2 clear 12,4,0,set3,265,149,149,0,DC_15
+prototype,weak 0.5 shape 0.75 loud 2 clear 12,4,0,set3,323,275,275,0,GC_15
+prototype,weak 0.5 shape 0.75 loud 2 clear 12,4,0,set3,199,170,161,9,MC_17
+prototype,weak 0.4 shape 0.65 loud 1 clear 8,5,1,set3,265,197,189,8,DC_15
+prototype,weak 0.4 shape 0.65 loud 1 clear 8,5,1,set3,323,303,303,0,GC_15
+prototype,weak 0.4 shape 0.65 loud 1 clear 8,5,1,set3,199,196,176,20,MC_17
+prototype,weak 0.3 shape 0.55 loud 0.75 clear 6,6,0,set3,265,234,204,30,DC_15
+prototype,weak 0.3 shape 0.55 loud 0.75 clear 6,6,0,set3,323,316,307,9,GC_15
+prototype,weak 0.3 shape 0.55 loud 0.75 clear 6,6,0,set3,199,202,181,21,MC_17
+prototype,weak 0.2 shape 0.45 loud 0.5 clear 4,7,0,set3,265,331,227,104,DC_15
+prototype,weak 0.2 shape 0.45 loud 0.5 clear 4,7,0,set3,323,375,311,64,GC_15
+prototype,weak 0.2 shape 0.45 loud 0.5 clear 4,7,0,set3,199,231,188,43,MC_17
+prototype,weak 0.1 shape 0.35 loud 0.25 clear 2,8,0,set3,265,443,230,213,DC_15
+prototype,weak 0.1 shape 0.35 loud 0.25 clear 2,8,0,set3,323,485,312,173,GC_15
+prototype,weak 0.1 shape 0.35 loud 0.25 clear 2,8,0,set3,199,317,192,125,MC_17
+original,floor 1e17 offset 0.15,1,0,deploy_GC_15,422,24,24,0,GC_15
+original,floor 5e16 offset 0.15,2,0,deploy_GC_15,422,64,64,0,GC_15
+original,floor 2e16 offset 0.15,3,0,deploy_GC_15,422,253,251,2,GC_15
+original,floor 7e15 offset 0.15,4,1,deploy_GC_15,422,319,315,4,GC_15
+original,floor 3e15 offset 0.15,5,0,deploy_GC_15,422,319,314,5,GC_15
+original,floor 1e15 offset 0.15,6,0,deploy_GC_15,422,319,314,5,GC_15
+original,floor 3e14 offset 0.15,7,0,deploy_GC_15,422,322,314,8,GC_15
+original,floor 1e14 offset 0.15,8,0,deploy_GC_15,422,322,314,8,GC_15
+original,floor 0 offset 0.15,9,0,deploy_GC_15,422,554,325,229,GC_15
+original,floor 0 offset 0.05,10,0,deploy_GC_15,422,590,323,267,GC_15
+original,floor 0 offset 0,11,0,deploy_GC_15,422,589,324,265,GC_15
+prototype,weak 0.8 shape 0.95 loud Inf clear Inf,1,0,deploy_GC_15,422,13,13,0,GC_15
+prototype,weak 0.7 shape 0.9 loud Inf clear Inf,2,0,deploy_GC_15,422,124,124,0,GC_15
+prototype,weak 0.6 shape 0.85 loud 4 clear 16,3,0,deploy_GC_15,422,314,278,36,GC_15
+prototype,weak 0.5 shape 0.75 loud 2 clear 12,4,0,deploy_GC_15,422,455,348,107,GC_15
+prototype,weak 0.4 shape 0.65 loud 1 clear 8,5,1,deploy_GC_15,422,575,383,192,GC_15
+prototype,weak 0.3 shape 0.55 loud 0.75 clear 6,6,0,deploy_GC_15,422,705,389,316,GC_15
+prototype,weak 0.2 shape 0.45 loud 0.5 clear 4,7,0,deploy_GC_15,422,858,391,467,GC_15
+prototype,weak 0.1 shape 0.35 loud 0.25 clear 2,8,0,deploy_GC_15,422,980,390,590,GC_15
+original,floor 1e17 offset 0.15,1,0,deploy_GC_15_good,411,24,24,0,GC_15
+original,floor 5e16 offset 0.15,2,0,deploy_GC_15_good,411,64,64,0,GC_15
+original,floor 2e16 offset 0.15,3,0,deploy_GC_15_good,411,253,251,2,GC_15
+original,floor 7e15 offset 0.15,4,1,deploy_GC_15_good,411,319,315,4,GC_15
+original,floor 3e15 offset 0.15,5,0,deploy_GC_15_good,411,319,314,5,GC_15
+original,floor 1e15 offset 0.15,6,0,deploy_GC_15_good,411,319,314,5,GC_15
+original,floor 3e14 offset 0.15,7,0,deploy_GC_15_good,411,322,314,8,GC_15
+original,floor 1e14 offset 0.15,8,0,deploy_GC_15_good,411,322,314,8,GC_15
+original,floor 0 offset 0.15,9,0,deploy_GC_15_good,411,322,314,8,GC_15
+original,floor 0 offset 0.05,10,0,deploy_GC_15_good,411,327,312,15,GC_15
+original,floor 0 offset 0,11,0,deploy_GC_15_good,411,324,313,11,GC_15
+prototype,weak 0.8 shape 0.95 loud Inf clear Inf,1,0,deploy_GC_15_good,411,13,13,0,GC_15
+prototype,weak 0.7 shape 0.9 loud Inf clear Inf,2,0,deploy_GC_15_good,411,120,120,0,GC_15
+prototype,weak 0.6 shape 0.85 loud 4 clear 16,3,0,deploy_GC_15_good,411,273,273,0,GC_15
+prototype,weak 0.5 shape 0.75 loud 2 clear 12,4,0,deploy_GC_15_good,411,338,337,1,GC_15
+prototype,weak 0.4 shape 0.65 loud 1 clear 8,5,1,deploy_GC_15_good,411,373,372,1,GC_15
+prototype,weak 0.3 shape 0.55 loud 0.75 clear 6,6,0,deploy_GC_15_good,411,387,378,9,GC_15
+prototype,weak 0.2 shape 0.45 loud 0.5 clear 4,7,0,deploy_GC_15_good,411,412,380,32,GC_15
+prototype,weak 0.1 shape 0.35 loud 0.25 clear 2,8,0,deploy_GC_15_good,411,440,379,61,GC_15
+original,floor 1e17 offset 0.15,1,0,deploy_GC_18,1724,183,183,0,GC_18
+original,floor 5e16 offset 0.15,2,0,deploy_GC_18,1724,441,441,0,GC_18
+original,floor 2e16 offset 0.15,3,0,deploy_GC_18,1724,664,662,2,GC_18
+original,floor 7e15 offset 0.15,4,1,deploy_GC_18,1724,964,960,4,GC_18
+original,floor 3e15 offset 0.15,5,0,deploy_GC_18,1724,1002,994,8,GC_18
+original,floor 1e15 offset 0.15,6,0,deploy_GC_18,1724,1027,1014,13,GC_18
+original,floor 3e14 offset 0.15,7,0,deploy_GC_18,1724,1029,1014,15,GC_18
+original,floor 1e14 offset 0.15,8,0,deploy_GC_18,1724,1029,1014,15,GC_18
+original,floor 0 offset 0.15,9,0,deploy_GC_18,1724,1029,1014,15,GC_18
+original,floor 0 offset 0.05,10,0,deploy_GC_18,1724,1074,1041,33,GC_18
+original,floor 0 offset 0,11,0,deploy_GC_18,1724,1057,1032,25,GC_18
+prototype,weak 0.8 shape 0.95 loud Inf clear Inf,1,0,deploy_GC_18,1724,48,48,0,GC_18
+prototype,weak 0.7 shape 0.9 loud Inf clear Inf,2,0,deploy_GC_18,1724,244,244,0,GC_18
+prototype,weak 0.6 shape 0.85 loud 4 clear 16,3,0,deploy_GC_18,1724,438,438,0,GC_18
+prototype,weak 0.5 shape 0.75 loud 2 clear 12,4,0,deploy_GC_18,1724,707,705,2,GC_18
+prototype,weak 0.4 shape 0.65 loud 1 clear 8,5,1,deploy_GC_18,1724,1122,1116,6,GC_18
+prototype,weak 0.3 shape 0.55 loud 0.75 clear 6,6,0,deploy_GC_18,1724,1356,1313,43,GC_18
+prototype,weak 0.2 shape 0.45 loud 0.5 clear 4,7,0,deploy_GC_18,1724,1580,1440,140,GC_18
+prototype,weak 0.1 shape 0.35 loud 0.25 clear 2,8,0,deploy_GC_18,1724,1664,1474,190,GC_18
+original,floor 1e17 offset 0.15,1,0,deploy_MC_20,717,19,19,0,MC_20
+original,floor 5e16 offset 0.15,2,0,deploy_MC_20,717,164,164,0,MC_20
+original,floor 2e16 offset 0.15,3,0,deploy_MC_20,717,254,254,0,MC_20
+original,floor 7e15 offset 0.15,4,1,deploy_MC_20,717,334,330,4,MC_20
+original,floor 3e15 offset 0.15,5,0,deploy_MC_20,717,438,430,8,MC_20
+original,floor 1e15 offset 0.15,6,0,deploy_MC_20,717,501,472,29,MC_20
+original,floor 3e14 offset 0.15,7,0,deploy_MC_20,717,518,472,46,MC_20
+original,floor 1e14 offset 0.15,8,0,deploy_MC_20,717,518,472,46,MC_20
+original,floor 0 offset 0.15,9,0,deploy_MC_20,717,518,472,46,MC_20
+original,floor 0 offset 0.05,10,0,deploy_MC_20,717,546,475,71,MC_20
+original,floor 0 offset 0,11,0,deploy_MC_20,717,547,469,78,MC_20
+prototype,weak 0.8 shape 0.95 loud Inf clear Inf,1,0,deploy_MC_20,717,24,24,0,MC_20
+prototype,weak 0.7 shape 0.9 loud Inf clear Inf,2,0,deploy_MC_20,717,197,197,0,MC_20
+prototype,weak 0.6 shape 0.85 loud 4 clear 16,3,0,deploy_MC_20,717,343,343,0,MC_20
+prototype,weak 0.5 shape 0.75 loud 2 clear 12,4,0,deploy_MC_20,717,414,414,0,MC_20
+prototype,weak 0.4 shape 0.65 loud 1 clear 8,5,1,deploy_MC_20,717,502,495,7,MC_20
+prototype,weak 0.3 shape 0.55 loud 0.75 clear 6,6,0,deploy_MC_20,717,579,544,35,MC_20
+prototype,weak 0.2 shape 0.45 loud 0.5 clear 4,7,0,deploy_MC_20,717,731,575,156,MC_20
+prototype,weak 0.1 shape 0.35 loud 0.25 clear 2,8,0,deploy_MC_20,717,910,601,309,MC_20
+original,floor 1e17 offset 0.15,1,0,deploy_DC_18,621,0,0,0,DC_18
+original,floor 5e16 offset 0.15,2,0,deploy_DC_18,621,0,0,0,DC_18
+original,floor 2e16 offset 0.15,3,0,deploy_DC_18,621,0,0,0,DC_18
+original,floor 7e15 offset 0.15,4,1,deploy_DC_18,621,1,1,0,DC_18
+original,floor 3e15 offset 0.15,5,0,deploy_DC_18,621,42,36,6,DC_18
+original,floor 1e15 offset 0.15,6,0,deploy_DC_18,621,115,96,19,DC_18
+original,floor 3e14 offset 0.15,7,0,deploy_DC_18,621,394,351,43,DC_18
+original,floor 1e14 offset 0.15,8,0,deploy_DC_18,621,434,351,83,DC_18
+original,floor 0 offset 0.15,9,0,deploy_DC_18,621,459,364,95,DC_18
+original,floor 0 offset 0.05,10,0,deploy_DC_18,621,548,400,148,DC_18
+original,floor 0 offset 0,11,0,deploy_DC_18,621,499,374,125,DC_18
+prototype,weak 0.8 shape 0.95 loud Inf clear Inf,1,0,deploy_DC_18,621,0,0,0,DC_18
+prototype,weak 0.7 shape 0.9 loud Inf clear Inf,2,0,deploy_DC_18,621,51,51,0,DC_18
+prototype,weak 0.6 shape 0.85 loud 4 clear 16,3,0,deploy_DC_18,621,127,127,0,DC_18
+prototype,weak 0.5 shape 0.75 loud 2 clear 12,4,0,deploy_DC_18,621,202,202,0,DC_18
+prototype,weak 0.4 shape 0.65 loud 1 clear 8,5,1,deploy_DC_18,621,314,303,11,DC_18
+prototype,weak 0.3 shape 0.55 loud 0.75 clear 6,6,0,deploy_DC_18,621,446,396,50,DC_18
+prototype,weak 0.2 shape 0.45 loud 0.5 clear 4,7,0,deploy_DC_18,621,718,476,242,DC_18
+prototype,weak 0.1 shape 0.35 loud 0.25 clear 2,8,0,deploy_DC_18,621,967,522,445,DC_18
+original,floor 1e17 offset 0.15,1,0,deploy_GC_17,1865,428,428,0,GC_17
+original,floor 5e16 offset 0.15,2,0,deploy_GC_17,1865,589,589,0,GC_17
+original,floor 2e16 offset 0.15,3,0,deploy_GC_17,1865,744,743,1,GC_17
+original,floor 7e15 offset 0.15,4,1,deploy_GC_17,1865,949,947,2,GC_17
+original,floor 3e15 offset 0.15,5,0,deploy_GC_17,1865,1055,1053,2,GC_17
+original,floor 1e15 offset 0.15,6,0,deploy_GC_17,1865,1138,1131,7,GC_17
+original,floor 3e14 offset 0.15,7,0,deploy_GC_17,1865,1139,1131,8,GC_17
+original,floor 1e14 offset 0.15,8,0,deploy_GC_17,1865,1139,1131,8,GC_17
+original,floor 0 offset 0.15,9,0,deploy_GC_17,1865,1139,1131,8,GC_17
+original,floor 0 offset 0.05,10,0,deploy_GC_17,1865,1116,1103,13,GC_17
+original,floor 0 offset 0,11,0,deploy_GC_17,1865,1074,1057,17,GC_17
+prototype,weak 0.8 shape 0.95 loud Inf clear Inf,1,0,deploy_GC_17,1865,26,26,0,GC_17
+prototype,weak 0.7 shape 0.9 loud Inf clear Inf,2,0,deploy_GC_17,1865,244,244,0,GC_17
+prototype,weak 0.6 shape 0.85 loud 4 clear 16,3,0,deploy_GC_17,1865,736,736,0,GC_17
+prototype,weak 0.5 shape 0.75 loud 2 clear 12,4,0,deploy_GC_17,1865,1152,1149,3,GC_17
+prototype,weak 0.4 shape 0.65 loud 1 clear 8,5,1,deploy_GC_17,1865,1469,1452,17,GC_17
+prototype,weak 0.3 shape 0.55 loud 0.75 clear 6,6,0,deploy_GC_17,1865,1604,1563,41,GC_17
+prototype,weak 0.2 shape 0.45 loud 0.5 clear 4,7,0,deploy_GC_17,1865,1684,1603,81,GC_17
+prototype,weak 0.1 shape 0.35 loud 0.25 clear 2,8,0,deploy_GC_17,1865,1769,1624,145,GC_17
+original,floor 1e17 offset 0.15,1,0,deploy_MC_19,1073,0,0,0,MC_19
+original,floor 5e16 offset 0.15,2,0,deploy_MC_19,1073,0,0,0,MC_19
+original,floor 2e16 offset 0.15,3,0,deploy_MC_19,1073,71,71,0,MC_19
+original,floor 7e15 offset 0.15,4,1,deploy_MC_19,1073,162,156,6,MC_19
+original,floor 3e15 offset 0.15,5,0,deploy_MC_19,1073,335,330,5,MC_19
+original,floor 1e15 offset 0.15,6,0,deploy_MC_19,1073,628,618,10,MC_19
+original,floor 3e14 offset 0.15,7,0,deploy_MC_19,1073,750,735,15,MC_19
+original,floor 1e14 offset 0.15,8,0,deploy_MC_19,1073,758,735,23,MC_19
+original,floor 0 offset 0.15,9,0,deploy_MC_19,1073,758,735,23,MC_19
+original,floor 0 offset 0.05,10,0,deploy_MC_19,1073,795,743,52,MC_19
+original,floor 0 offset 0,11,0,deploy_MC_19,1073,776,739,37,MC_19
+prototype,weak 0.8 shape 0.95 loud Inf clear Inf,1,0,deploy_MC_19,1073,64,64,0,MC_19
+prototype,weak 0.7 shape 0.9 loud Inf clear Inf,2,0,deploy_MC_19,1073,374,374,0,MC_19
+prototype,weak 0.6 shape 0.85 loud 4 clear 16,3,0,deploy_MC_19,1073,536,536,0,MC_19
+prototype,weak 0.5 shape 0.75 loud 2 clear 12,4,0,deploy_MC_19,1073,716,716,0,MC_19
+prototype,weak 0.4 shape 0.65 loud 1 clear 8,5,1,deploy_MC_19,1073,847,844,3,MC_19
+prototype,weak 0.3 shape 0.55 loud 0.75 clear 6,6,0,deploy_MC_19,1073,954,921,33,MC_19
+prototype,weak 0.2 shape 0.45 loud 0.5 clear 4,7,0,deploy_MC_19,1073,1085,950,135,MC_19
+prototype,weak 0.1 shape 0.35 loud 0.25 clear 2,8,0,deploy_MC_19,1073,1220,966,254,MC_19
+original,floor 1e17 offset 0.15,1,0,deploy_DC_17,1246,0,0,0,DC_17
+original,floor 5e16 offset 0.15,2,0,deploy_DC_17,1246,0,0,0,DC_17
+original,floor 2e16 offset 0.15,3,0,deploy_DC_17,1246,0,0,0,DC_17
+original,floor 7e15 offset 0.15,4,1,deploy_DC_17,1246,45,45,0,DC_17
+original,floor 3e15 offset 0.15,5,0,deploy_DC_17,1246,198,193,5,DC_17
+original,floor 1e15 offset 0.15,6,0,deploy_DC_17,1246,429,422,7,DC_17
+original,floor 3e14 offset 0.15,7,0,deploy_DC_17,1246,662,656,6,DC_17
+original,floor 1e14 offset 0.15,8,0,deploy_DC_17,1246,702,666,36,DC_17
+original,floor 0 offset 0.15,9,0,deploy_DC_17,1246,727,666,61,DC_17
+original,floor 0 offset 0.05,10,0,deploy_DC_17,1246,750,689,61,DC_17
+original,floor 0 offset 0,11,0,deploy_DC_17,1246,736,672,64,DC_17
+prototype,weak 0.8 shape 0.95 loud Inf clear Inf,1,0,deploy_DC_17,1246,0,0,0,DC_17
+prototype,weak 0.7 shape 0.9 loud Inf clear Inf,2,0,deploy_DC_17,1246,152,152,0,DC_17
+prototype,weak 0.6 shape 0.85 loud 4 clear 16,3,0,deploy_DC_17,1246,453,453,0,DC_17
+prototype,weak 0.5 shape 0.75 loud 2 clear 12,4,0,deploy_DC_17,1246,660,660,0,DC_17
+prototype,weak 0.4 shape 0.65 loud 1 clear 8,5,1,deploy_DC_17,1246,859,854,5,DC_17
+prototype,weak 0.3 shape 0.55 loud 0.75 clear 6,6,0,deploy_DC_17,1246,1019,976,43,DC_17
+prototype,weak 0.2 shape 0.45 loud 0.5 clear 4,7,0,deploy_DC_17,1246,1167,1036,131,DC_17
+prototype,weak 0.1 shape 0.35 loud 0.25 clear 2,8,0,deploy_DC_17,1246,1280,1052,228,DC_17

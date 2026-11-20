@@ -20,6 +20,7 @@ HOP_S = 0.1               # time step of the spectrogram and of the network outp
 NPERSEG = 800             # 0.4 s analysis window -> 2.5 Hz resolution
 FMIN, FMAX = 5.0, 250.0   # frequency range given to the network (Hz)
 ROOT = "//frosty.ucsd.edu/GofMX_Decimated_8"
+ROOTS = [ROOT, "//frosty.ucsd.edu/GofMX_Decimated_10", "//frosty.ucsd.edu/GofMX_Decimated_12"]
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TESTS = os.path.join(os.path.dirname(HERE), "evaluation")     # where the labelled sets live
@@ -38,8 +39,9 @@ def file_index(sites):
         idx = {r["file"]: r["path"] for r in csv.DictReader(open(INDEX))}
     have = {os.path.basename(p).split("_")[1] + "_" + os.path.basename(p).split("_")[2] for p in idx.values()}
     for site in sorted(set(sites) - have):
-        for p in glob.glob("%s/GOM_%s/*_df100/*df100.x.wav" % (ROOT, site)):
-            idx[os.path.basename(p)] = p.replace(os.sep, "/")
+        for root in ROOTS:
+            for p in glob.glob("%s/GOM_%s/*_df100/*df100.x.wav" % (root, site)):
+                idx[os.path.basename(p)] = p.replace(os.sep, "/")
     with open(INDEX, "w", newline="") as f:
         w = csv.writer(f)
         w.writerow(["file", "path"])
